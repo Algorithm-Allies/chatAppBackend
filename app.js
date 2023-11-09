@@ -1,10 +1,9 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-
+//test
 const mongoUrl =
   "mongodb+srv://mnicokar:BayValleyTech@cluster0.jtu2rd7.mongodb.net/?retryWrites=true&w=majority";
-
 mongoose
   .connect(mongoUrl)
   .then(() => {
