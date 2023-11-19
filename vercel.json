@@ -3,7 +3,7 @@
   "name": "chatApp",
   "functions": {
     "api": {
-      "src": "/functions/server.js",
+      "handler": "functions/server.js",
       "maxDuration": 30
     }
   }
