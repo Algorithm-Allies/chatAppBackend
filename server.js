@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/messages", require("./routes/messageRoutes"));
 
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
