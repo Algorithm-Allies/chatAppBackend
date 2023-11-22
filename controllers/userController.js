@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 // @route: POST /api/users
 // @access: Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, password, dateOfBirth, profilePhoto } =
+  const { firstName, lastName, email, username, password, dateOfBirth, profilePhoto } =
     req.body;
 
   if (!firstName || !lastName || !email || !password || !dateOfBirth) {
@@ -34,6 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     email,
+    username,
     password: hashedPassword,
     dateOfBirth,
     profilePhoto,
@@ -89,6 +90,7 @@ const loginUser = asyncHandler(async (req, res) => {
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
+    username: user.username,
     token,
   });
 });
