@@ -9,8 +9,15 @@ const mongoose = require("mongoose");
 // @route: POST /api/users
 // @access: Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, username, password, dateOfBirth, profilePhoto } =
-    req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    username,
+    password,
+    dateOfBirth,
+    profilePhoto,
+  } = req.body;
 
   if (!firstName || !lastName || !email || !password || !dateOfBirth) {
     res.status(400);
@@ -105,7 +112,7 @@ const getUsers = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "No users found" });
   }
 
-  console.log(users)
+  console.log(users);
   res.status(200).json(users);
 });
 
@@ -139,4 +146,26 @@ const getUser = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { registerUser, loginUser, getUsers, getUser };
+const getUserByUsername = asyncHandler(async (req, res) => {
+  const username = req.params.username;
+
+  // Find the user by username in the database
+  const user = await User.findOne({ username });
+
+  // Check if the user exists
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  res.status(200).json({
+    _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    dateOfBirth: user.dateOfBirth,
+    profilePhoto: user.profilePhoto,
+  });
+});
+
+module.exports = { registerUser, loginUser, getUsers, getUser, getUserByUsername };
