@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
+app.use("/api/directMessages", require("./routes/directMessageRoutes"));
 app.use("/api/channels", require("./routes/channelRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/messages", require("./routes/messageRoutes"));
