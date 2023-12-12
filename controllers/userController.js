@@ -76,7 +76,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!user) {
     res.status(401);
-    throw new Error("Invalid email or password");
+    throw new Error("Invalid email");
   }
 
   // Check if the password is correct
@@ -84,7 +84,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!isPasswordMatch) {
     res.status(401);
-    throw new Error("Invalid email or password");
+    throw new Error("Invalid password");
   }
 
   // Generate a JSON Web Token (JWT)
