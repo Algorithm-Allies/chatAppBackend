@@ -1,11 +1,15 @@
 const asyncHandler = require("express-async-handler");
 const DirectMessages = require("../models/directMessagesModal");
 
+// @desc Get Direct Messages
+// @route GET /api/directMessages
 const getDirectMessages = asyncHandler(async (req, res) => {
   const directMessages = await DirectMessages.find();
   res.status(200).json(directMessages);
 });
 
+// @desc Create new DirectMessage
+// @route POST /api/directMessages/:id
 const createDirectMessage = asyncHandler(async (req, res) => {
   const loggedInUser = req.body.loggedInUser;
   const directUserId = req.params.id;
@@ -27,6 +31,8 @@ const createDirectMessage = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Delete DirectMessage
+// @route DELETE /api/directMessages/:id
 const deleteDirectMessage = asyncHandler(async (req, res) => {
   const directUserId = req.params.id;
 
@@ -45,6 +51,8 @@ const deleteDirectMessage = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc Get Direct Messages by Specific User
+// @route GET /api/directMessages/:id
 const getDirectMessagesByUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
