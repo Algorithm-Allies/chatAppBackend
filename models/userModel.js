@@ -31,6 +31,12 @@ const userSchema = mongoose.Schema(
     profilePhoto: {
       type: String,
     },
+    directMessages: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "DirectMessage",
+      },
+    ],
   },
   {
     timestamps: true,

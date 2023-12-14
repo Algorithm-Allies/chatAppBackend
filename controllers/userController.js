@@ -9,8 +9,15 @@ const mongoose = require("mongoose");
 // @route: POST /api/users
 // @access: Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, username, password, dateOfBirth, profilePhoto } =
-    req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    username,
+    password,
+    dateOfBirth,
+    profilePhoto,
+  } = req.body;
 
   if (!firstName || !lastName || !email || !password || !dateOfBirth) {
     res.status(400);
@@ -38,6 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
     password: hashedPassword,
     dateOfBirth,
     profilePhoto,
+    directMessages: [],
   });
 
   if (user) {
@@ -105,7 +113,7 @@ const getUsers = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "No users found" });
   }
 
-  console.log(users)
+  console.log(users);
   res.status(200).json(users);
 });
 

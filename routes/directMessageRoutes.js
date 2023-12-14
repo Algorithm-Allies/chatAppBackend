@@ -9,10 +9,8 @@ const {
 } = require("../controllers/directMessageController");
 
 router.route("/").get(getDirectMessages);
-router
-  .route("/:id")
-  .post(createDirectMessage)
-  .get(getDirectMessagesByUser)
-  .delete(deleteDirectMessage);
+router.route("/:id").get(getDirectMessagesByUser).delete(deleteDirectMessage);
+
+router.route("/:directUserId/:loggedInUserId").post(createDirectMessage);
 
 module.exports = router;

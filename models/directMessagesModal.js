@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const directMessageSchema = new mongoose.Schema({
-  direct_user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
+  // direct_user: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "User",
+  //   required: true,
+  // },
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,

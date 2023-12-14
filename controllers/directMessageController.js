@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const DirectMessages = require("../models/directMessagesModal");
-
+const User = require("../models/userModel");
 // @desc Get Direct Messages
 // @route GET /api/directMessages
 const getDirectMessages = asyncHandler(async (req, res) => {
@@ -10,26 +10,35 @@ const getDirectMessages = asyncHandler(async (req, res) => {
 
 // @desc Create new DirectMessage
 // @route POST /api/directMessages/:id
-const createDirectMessage = asyncHandler(async (req, res) => {
-  const loggedInUser = req.body.loggedInUser;
-  const directUserId = req.params.id;
-  console.log(directUserId);
-  if (!loggedInUser || !directUserId) {
+const createDirectMessage = async (req, res) => {
+  const { loggedInUserId, directUserId } = req.params;
+  console.log(loggedInUserId, directUserId);
+  if (!loggedInUserId || !directUserId) {
     return res.status(400).json({ message: "Invalid user data" });
   }
 
   try {
-    const newDirectMessage = await DirectMessages.create({
-      direct_user: directUserId,
-      users: [directUserId, loggedInUser],
+    const newDirectMessage = await DirectMessage.create({
+      users: [loggedInUserId, directUserId],
       messages: [],
     });
+
+    const loggedInUser = await User.findById(loggedInUserId);
+    const directUser = await User.findById(directUserId);
+
+    console.log(loggedInUser, directUser);
+
+    loggedInUser.directMessages.push(newDirectMessage._id);
+    directUser.directMessages.push(newDirectMessage._id);
+
+    await loggedInUser.save();
+    await directUser.save();
 
     res.status(201).json(newDirectMessage);
   } catch (error) {
     res.status(500).json({ message: "Error creating direct message", error });
   }
-});
+};
 
 // @desc Delete DirectMessage
 // @route DELETE /api/directMessages/:id
