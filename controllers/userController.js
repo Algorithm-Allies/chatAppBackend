@@ -77,7 +77,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!user) {
     res.status(401);
-    throw new Error("Invalid email or password");
+    throw new Error("Invalid email");
   }
 
   // Check if the password is correct
@@ -85,7 +85,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!isPasswordMatch) {
     res.status(401);
-    throw new Error("Invalid email or password");
+    throw new Error("Invalid password");
   }
 
   // Generate a JSON Web Token (JWT)
@@ -147,4 +147,26 @@ const getUser = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { registerUser, loginUser, getUsers, getUser };
+const getUserByUsername = asyncHandler(async (req, res) => {
+  const username = req.params.username;
+
+  // Find the user by username in the database
+  const user = await User.findOne({ username });
+
+  // Check if the user exists
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  res.status(200).json({
+    _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    dateOfBirth: user.dateOfBirth,
+    profilePhoto: user.profilePhoto,
+  });
+});
+
+module.exports = { registerUser, loginUser, getUsers, getUser, getUserByUsername };
