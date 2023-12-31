@@ -13,8 +13,8 @@ const {
 router.post("/", registerUser);
 router.post("/login", loginUser);
 
-//router.use(protect);
-router.get("/",protect, getUsers);
+router.use(protect);
+router.get("/", getUsers);
 router.get("/:id", getUser);
 router.get("/username/:username", getUserByUsername);
 
