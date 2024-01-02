@@ -130,7 +130,7 @@ const getUser = asyncHandler(async (req, res) => {
 
   // Find the user by ID in the database
   const user = await User.findById(userId);
-
+  console.log(user);
   // Check if the user exists
   if (!user) {
     res.status(404);
@@ -169,4 +169,10 @@ const getUserByUsername = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { registerUser, loginUser, getUsers, getUser, getUserByUsername };
+module.exports = {
+  registerUser,
+  loginUser,
+  getUsers,
+  getUser,
+  getUserByUsername,
+};

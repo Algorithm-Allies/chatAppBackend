@@ -5,8 +5,8 @@ const asyncHandler = require("express-async-handler");
 const protect = asyncHandler(async (req, res, next) => {
   let token;
 
-  console.log("Headers",req.headers.authorization);
-  console.log("process.env",process.env.JWT_SECRET);
+  console.log("Headers", req.headers.authorization);
+  console.log("process.env", process.env.JWT_SECRET);
 
   if (
     req.headers.authorization &&

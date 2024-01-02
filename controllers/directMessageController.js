@@ -18,7 +18,7 @@ const createDirectMessage = async (req, res) => {
   }
 
   try {
-    const newDirectMessage = await DirectMessage.create({
+    const newDirectMessage = await DirectMessages.create({
       users: [loggedInUserId, directUserId],
       messages: [],
     });
@@ -26,6 +26,10 @@ const createDirectMessage = async (req, res) => {
     const loggedInUser = await User.findById(loggedInUserId);
     const directUser = await User.findById(directUserId);
 
+    if (!loggedInUser || !directUser) {
+      res.status(404);
+      throw new Error("User not found");
+    }
     console.log(loggedInUser, directUser);
 
     loggedInUser.directMessages.push(newDirectMessage._id);

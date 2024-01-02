@@ -37,6 +37,12 @@ const userSchema = mongoose.Schema(
         ref: "DirectMessage",
       },
     ],
+    channels: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Channel",
+      },
+    ],
   },
   {
     timestamps: true,
