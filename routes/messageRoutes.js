@@ -3,23 +3,23 @@ const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
 
 const {
-  getChats,
-  createGroupChat,
-  renameGroup,
-  addToGroup,
-  removeFromGroup,
+  getChannels, // Updated function name
+  createChannel, // Updated function name
+  renameChannel, // Updated function name
+  addToChannel, // Updated function name
+  removeFromChannel, // Updated function name
 } = require("../controllers/messageController");
 
-router.route("/").get(protect, getChats);
+router.route("/").get(protect, getChannels); // Updated function name
 
-router.route("/group").post(protect, createGroupChat);
+router.route("/channel").post(protect, createChannel); // Updated route and function name
 
-router.route("/rename").put(protect, renameGroup);
+router.route("/rename").put(protect, renameChannel); // Updated function name
 
+router.route("/channelAddUser").put(protect, addToChannel); // Updated route and function name
 
-router.route("/groupAdd").put(protect, addToGroup);
+router.route("/channelRemoveUser").put(protect, removeFromChannel); // Updated route and function name
 
-router.route("/groupRemove").put(protect, removeFromGroup);
 //router.route("/:id").put(updateMessage).delete(deleteMessage);
 
 module.exports = router;
