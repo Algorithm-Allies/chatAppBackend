@@ -1,12 +1,12 @@
 const jwt = require("jsonwebtoken");
-const UserActivation = require("../models/userModel.js"); // Fix the import here
+const UserActivation = require("../models/userModel.js");
 const asyncHandler = require("express-async-handler");
 
 const protect = asyncHandler(async (req, res, next) => {
   let token;
 
-  console.log("Headers",req.headers.authorization);
-  console.log("process.env",process.env.JWT_SECRET);
+  console.log("Headers", req.headers.authorization);
+  console.log("process.env", process.env.JWT_SECRET);
 
   if (
     req.headers.authorization &&
@@ -15,13 +15,21 @@ const protect = asyncHandler(async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
 
-      // Decodes token id
+      // Decodes token and retrieves user ID
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Use the correct model here (UserActivation instead of uer)
-      req.user = await UserActivation.findById(decoded.id).select("-password");
+      // Check if the decoded token has the correct property for user ID
+      if (decoded && decoded.userId) {
+        // Use the correct model here (UserActivation instead of uer)
+        req.user = await UserActivation.findById(decoded.userId).select("-password");
+        console.log(req.user)
+  
 
-      next();
+        next();
+      } else {
+        res.status(401);
+        throw new Error("Not authorized, invalid token payload");
+      }
     } catch (error) {
       res.status(401);
       throw new Error("Not authorized, token failed");
