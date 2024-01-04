@@ -77,7 +77,7 @@ const createChannel = asyncHandler(async (req, res) => {
 });
 
 // @desc Rename channel
-// @route PUT /api/channels/rename
+// @route PUT /api/channels/:id/rename
 // @access Private
 const renameChannel = asyncHandler(async (req, res) => {
   try {
@@ -195,13 +195,9 @@ const editChannelMessage = asyncHandler(async (req, res) => {
 
   try {
     const updatedMessage = await Message.findByIdAndUpdate(
-      messageId,
-      {
-        content: updatedContent,
-      },
-      {
-        new: true,
-      }
+      { _id: messageId, channel: channelId },
+      { content: updatedContent },
+      { new: true }
     );
 
     if (!updatedMessage) {
@@ -219,7 +215,11 @@ const deleteChannelMessage = asyncHandler(async (req, res) => {
   const { channelId, messageId } = req.body;
 
   try {
-    const deletedMessage = await Message.findByIdAndDelete(messageId);
+    // Delete the messagefrom specified channel
+    const deletedMessage = await Message.findByIdAndDelete({
+      _id: messageId,
+      channel: channelId,
+    });
 
     if (!deletedMessage) {
       res.status(404).json({ error: "Message not found" });

@@ -7,9 +7,14 @@ const messageSchema = mongoose.Schema(
       ref: "User",
       required: true,
     },
-    content: {
+    text: {
       type: String,
       required: [true, "Please add a message"],
+    },
+    channel: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Channel",
+      required: true,
     },
   },
   {
