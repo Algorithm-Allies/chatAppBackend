@@ -162,11 +162,14 @@ const removeMemberFromChannel = asyncHandler(async (req, res) => {
 // @route POST /api/channels/:id/addMessage
 // @access Private
 const addMessageToChannel = asyncHandler(async (req, res) => {
-  const { channelId, content } = req.body;
+  
+  const { channelId, text } = req.body;
+
 
   const newMessage = await Message.create({
     user: req.user._id,
-    content: content,
+    text: text,
+    channel: channelId,
   });
 
   const updatedChannel = await Channel.findByIdAndUpdate(
