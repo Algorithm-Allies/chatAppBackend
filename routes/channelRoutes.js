@@ -9,6 +9,7 @@ const {
   renameChannel, // Updated function name
   addMemberToChannel, // Updated function name
   removeMemberFromChannel, // Updated function name
+  getChannelMessages,
   addMessageToChannel,
   editChannelMessage,
   deleteChannelMessage,
@@ -25,6 +26,8 @@ router.route("/:id/rename").put(protect, renameChannel); // Updated function nam
 router.route("/:id/addUser").put(protect, addMemberToChannel); // Updated route and function name
 
 router.route("/:id/removeUser").put(protect, removeMemberFromChannel); // Updated route and function name
+
+router.route("/:id/messages").get(getChannelMessages);
 
 router.route("/:id/addMessage").post(protect, addMessageToChannel);
 
