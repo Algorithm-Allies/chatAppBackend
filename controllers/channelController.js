@@ -158,6 +158,22 @@ const removeMemberFromChannel = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Get messages from channel
+// @route GET /api/channels/:id/messages
+// @access Private
+const getChannelMessages = asyncHandler(async (req, res) => {
+  const channelId = req.params.id;
+
+  try {
+    const channelMessages = await Message.find({ channel: channelId });
+
+    res.json(channelMessages);
+  } catch (error) {
+    console.error("Error fetching channel messages:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // @desc Add message to channel
 // @route POST /api/channels/:id/addMessage
 // @access Private
@@ -218,7 +234,7 @@ const deleteChannelMessage = asyncHandler(async (req, res) => {
   const { channelId, messageId } = req.body;
 
   try {
-    // Delete the messagefrom specified channel
+    // Delete the message from specified channel
     const deletedMessage = await Message.findByIdAndDelete({
       _id: messageId,
       channel: channelId,
@@ -254,6 +270,7 @@ module.exports = {
   getChannelById,
   createChannel,
   renameChannel,
+  getChannelMessages,
   addMemberToChannel,
   removeMemberFromChannel,
   addMessageToChannel,
