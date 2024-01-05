@@ -53,6 +53,27 @@ const createChannel = asyncHandler(async (req, res) => {
   }
 });
 
+const getChannelById = asyncHandler(async (req, res) => {
+  const channelId = req.params.channelId;
+
+  try {
+    const channel = await Channel.findById(channelId)
+      .populate("members.user", "-password")
+      .populate("groupAdmin", "-password")
+      .populate("messages");
+
+    if (!channel) {
+      res.status(404);
+      throw new Error("Channel Not Found");
+    } else {
+      res.json(channel);
+    }
+  } catch (error) {
+    console.error("Error fetching channel:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 const renameChannel = asyncHandler(async (req, res) => {
   try {
     const { channelId, channelName } = req.body;
@@ -132,4 +153,5 @@ module.exports = {
   renameChannel,
   addToChannel,
   removeFromChannel,
+  getChannelById,
 };

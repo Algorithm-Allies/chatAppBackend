@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/messages", require("./routes/channelRoutes"));
+app.use("/api/channels", require("./routes/channelRoutes"));
 app.use("/api/messages", require("./routes/singleMessageRoutes"));
 app.get("/", (req, res) => {
   res.send("Welcome to the root URL!");

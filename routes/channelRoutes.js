@@ -7,12 +7,15 @@ const {
   createChannel, // Updated function name
   renameChannel, // Updated function name
   addToChannel, // Updated function name
-  removeFromChannel, // Updated function name
-} = require("../controllers/messageController");
+  removeFromChannel,
+  getChannelById, // Updated function name
+} = require("../controllers/channelController");
 
 router.route("/").get(protect, getChannels); // Updated function name
 
-router.route("/channel").post(protect, createChannel); // Updated route and function name
+router.route("/getChannelById/:channelId").get(protect, getChannelById); // Updated function name
+
+router.route("/createChannel").post(protect, createChannel); // Updated route and function name
 
 router.route("/rename").put(protect, renameChannel); // Updated function name
 

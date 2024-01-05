@@ -112,7 +112,6 @@ const getUsers = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "No users found" });
   }
 
-  console.log(users);
   res.status(200).json(users);
 });
 
@@ -168,4 +167,10 @@ const getUserByUsername = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { registerUser, loginUser, getUsers, getUser, getUserByUsername };
+module.exports = {
+  registerUser,
+  loginUser,
+  getUsers,
+  getUser,
+  getUserByUsername,
+};
