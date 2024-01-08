@@ -10,6 +10,7 @@ const messageSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add a message"],
     },
+    channel: { type: mongoose.Schema.Types.ObjectId, ref: "Channel" },
   },
   {
     timestamps: true,
