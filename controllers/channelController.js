@@ -1,11 +1,12 @@
 const asyncHandler = require("express-async-handler");
 
-const Channel = require("../models/channelsModal.js");
+const Channel = require("../models/chatModal.js");
 const Message = require("../models/messageModel.js");
 
 // @desc Get Channels the user is part of
 // @route GET /api/messages
 // @access Private
+
 const getChannels = asyncHandler(async (req, res) => {
   try {
     console.log("searching");
@@ -36,7 +37,8 @@ const createChannel = asyncHandler(async (req, res) => {
 
   try {
     const groupChannel = await Channel.create({
-      channelName: req.body.name,
+      chatName: req.body.name,
+      isGroupChat: true,
       createdBy: req.user._id,
       members: users.map((user) => ({ user })),
       groupAdmin: req.user._id,
@@ -147,6 +149,28 @@ const removeFromChannel = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteChat = asyncHandler(async (req, res) => {
+  const { chatId } = req.params;
+
+  try {
+    // Find the chat by ID
+    const chat = await Channel.findById(chatId);
+
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+
+    // Delete the chat
+    await Channel.findByIdAndDelete(chatId);
+
+    return res.status(200).json({ message: "Chat deleted successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error deleting chat", error: error.message });
+  }
+});
+
 module.exports = {
   getChannels,
   createChannel,
@@ -154,4 +178,5 @@ module.exports = {
   addToChannel,
   removeFromChannel,
   getChannelById,
+  deleteChat,
 };

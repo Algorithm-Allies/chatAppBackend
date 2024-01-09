@@ -1,15 +1,10 @@
 const mongoose = require("mongoose");
 
-const channelSchema = new mongoose.Schema({
-  channelName: {
+const chatSchema = new mongoose.Schema({
+  isGroupChat: { type: Boolean, default: false },
+  chatName: {
     type: String,
-    required: [true, "Please add a channel name"],
-    unique: true,
-  },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+    trim: true,
   },
   members: [
     {
@@ -33,6 +28,6 @@ const channelSchema = new mongoose.Schema({
   },
 });
 
-const Channel = mongoose.model("Channel", channelSchema);
+const Chat = mongoose.model("Chat", chatSchema);
 
-module.exports = Channel;
+module.exports = Chat;

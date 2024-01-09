@@ -8,8 +8,10 @@ const {
   renameChannel, // Updated function name
   addToChannel, // Updated function name
   removeFromChannel,
-  getChannelById, // Updated function name
+  getChannelById,
+  deleteChat, // Updated function name
 } = require("../controllers/channelController");
+const { del } = require("express/lib/application");
 
 router.route("/").get(protect, getChannels); // Updated function name
 
@@ -19,10 +21,10 @@ router.route("/createChannel").post(protect, createChannel); // Updated route an
 
 router.route("/rename").put(protect, renameChannel); // Updated function name
 
-router.route("/channelAddUser").put(protect, addToChannel); // Updated route and function name
+router.route("/addUser").put(protect, addToChannel); // Updated route and function name
 
-router.route("/channelRemoveUser").put(protect, removeFromChannel); // Updated route and function name
+router.route("/removeUser").put(protect, removeFromChannel); // Updated route and function name
 
-//router.route("/:id").put(updateMessage).delete(deleteMessage);
+router.route("/:chatId").delete(protect, deleteChat); // Updated route and function name
 
 module.exports = router;
