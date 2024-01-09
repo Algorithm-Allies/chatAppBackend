@@ -60,7 +60,7 @@ const deleteSingleMessage = asyncHandler(async (req, res) => {
     if (!deletedMessage) {
       return res.status(404).json({ message: "Message not found" });
     }
-    const channels = await Channel.updateMany(
+    const chat = await Chat.updateMany(
       { messages: messageId },
       { $pull: { messages: messageId } }
     );
@@ -68,7 +68,7 @@ const deleteSingleMessage = asyncHandler(async (req, res) => {
     res.status(200).json({
       message: "Message deleted successfully",
       deletedMessageId: deletedMessage._id,
-      affectedChannels: channels.nModified,
+      affectedChats: chat.nModified,
     });
   } catch (error) {
     res.status(500).json({ message: "Error deleting message", error });
@@ -77,7 +77,6 @@ const deleteSingleMessage = asyncHandler(async (req, res) => {
 
 const viewSingleMessage = asyncHandler(async (req, res) => {
   const messageId = req.params.messageId;
-
   try {
     const message = await Message.findById(messageId);
 
@@ -103,7 +102,6 @@ const viewAllMessagesInChat = asyncHandler(async (req, res) => {
     if (!chat) {
       throw new Error("Chat not found");
     }
-    //const messages = await Message.find({ _id: { $in: chat.messages } });
 
     res.json(chat.messages);
   } catch (error) {

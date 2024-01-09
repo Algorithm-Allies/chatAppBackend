@@ -2,7 +2,6 @@ const asyncHandler = require("express-async-handler");
 const mongoose = require("mongoose");
 const Chat = require("../models/chatModal.js");
 const User = require("../models/userModel.js");
-const Message = require("../models/messageModel.js");
 
 const createDirectMessage = asyncHandler(async (req, res) => {
   const { userId } = req.body;
@@ -65,16 +64,36 @@ const getAllDirectMessages = asyncHandler(async (req, res) => {
 
     res.status(200).json(directChats);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Failed to fetch direct messages",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Failed to fetch direct messages",
+      error: error.message,
+    });
+  }
+});
+
+const getDirectMessageById = asyncHandler(async (req, res) => {
+  try {
+    const chatId = req.params.chatId;
+    const chat = await Chat.findById(chatId)
+      .populate("members.user", "-password")
+      .populate("chatName")
+      .populate("messages");
+
+    if (!chat) {
+      return res.status(404).json({ message: "Targeted chat not found" });
+    } else {
+      res.status(200).json(chat);
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch direct chat",
+      error: error.message,
+    });
   }
 });
 
 module.exports = {
   createDirectMessage,
   getAllDirectMessages,
+  getDirectMessageById,
 };
