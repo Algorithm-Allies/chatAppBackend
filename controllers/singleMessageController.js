@@ -1,20 +1,18 @@
 const asyncHandler = require("express-async-handler");
 
-const Channel = require("../models/channelsModal.js");
+const Chat = require("../models/chatModal.js");
 const Message = require("../models/messageModel.js");
 
 const addSingleMessage = asyncHandler(async (req, res) => {
   try {
-    const { userId, channelId, text } = req.body;
-
-    const channel = await Channel.findById(channelId);
-    if (!channel) {
-      return res.status(404).json({ message: "Channel not found" });
+    const { chatId, text } = req.body;
+    const userId = req.user._id;
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
     }
 
-    const isMember = channel.members.some(
-      (member) => member.user.toString() === userId
-    );
+    const isMember = chat.members.some((member) => member.user.equals(userId));
     if (!isMember) {
       return res
         .status(403)
@@ -23,12 +21,12 @@ const addSingleMessage = asyncHandler(async (req, res) => {
 
     const newMessage = await Message.create({ user: userId, text });
 
-    channel.messages.push(newMessage);
-    await channel.save();
+    chat.messages.push(newMessage);
+    await chat.save();
 
-    res.status(201).json({ message: "Message added to channel", newMessage });
+    res.status(201).json({ message: "Message added to chat", newMessage });
   } catch (error) {
-    res.status(500).json({ message: "Error adding message to channel", error });
+    res.status(500).json({ message: "Error adding message to chat", error });
   }
 });
 
@@ -62,7 +60,7 @@ const deleteSingleMessage = asyncHandler(async (req, res) => {
     if (!deletedMessage) {
       return res.status(404).json({ message: "Message not found" });
     }
-    const channels = await Channel.updateMany(
+    const chat = await Chat.updateMany(
       { messages: messageId },
       { $pull: { messages: messageId } }
     );
@@ -70,7 +68,7 @@ const deleteSingleMessage = asyncHandler(async (req, res) => {
     res.status(200).json({
       message: "Message deleted successfully",
       deletedMessageId: deletedMessage._id,
-      affectedChannels: channels.nModified,
+      affectedChats: chat.nModified,
     });
   } catch (error) {
     res.status(500).json({ message: "Error deleting message", error });
@@ -79,7 +77,6 @@ const deleteSingleMessage = asyncHandler(async (req, res) => {
 
 const viewSingleMessage = asyncHandler(async (req, res) => {
   const messageId = req.params.messageId;
-
   try {
     const message = await Message.findById(messageId);
 
@@ -94,20 +91,19 @@ const viewSingleMessage = asyncHandler(async (req, res) => {
   }
 });
 
-const viewAllMessagesInChannel = asyncHandler(async (req, res) => {
-  const channelId = req.params.channelId;
+const viewAllMessagesInChat = asyncHandler(async (req, res) => {
+  const chatId = req.params.chatId;
   try {
-    const channel = await Channel.findById(channelId)
+    const chat = await Chat.findById(chatId)
       .populate("members.user", "-password")
       .populate("groupAdmin", "-password")
       .populate("messages");
 
-    if (!channel) {
-      throw new Error("Channel not found");
+    if (!chat) {
+      throw new Error("Chat not found");
     }
-    //const messages = await Message.find({ _id: { $in: channel.messages } });
 
-    res.json(channel.messages);
+    res.json(chat.messages);
   } catch (error) {
     res.status(400);
     throw new Error(error.message);
@@ -119,5 +115,5 @@ module.exports = {
   editSingleMessage,
   deleteSingleMessage,
   viewSingleMessage,
-  viewAllMessagesInChannel,
+  viewAllMessagesInChat,
 };
