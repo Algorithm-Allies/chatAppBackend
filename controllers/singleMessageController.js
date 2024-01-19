@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-
+const User = require("../models/userModel.js");
 const Chat = require("../models/chatModal.js");
 const Message = require("../models/messageModel.js");
 
@@ -21,10 +21,26 @@ const addSingleMessage = asyncHandler(async (req, res) => {
 
     const newMessage = await Message.create({ user: userId, text });
 
-    chat.messages.push(newMessage);
+    const user = await User.findById(userId);
+
+    const responseMessage = {
+      _id: newMessage._id,
+      text: newMessage.text,
+      createdAt: newMessage.createdAt,
+      updatedAt: newMessage.updatedAt,
+      __v: newMessage.__v,
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profilePhoto: user.profilePhoto,
+      },
+    };
+
+    chat.messages.push(responseMessage);
     await chat.save();
 
-    res.status(201).json({ message: "Message added to chat", newMessage });
+    res.status(201).json({ message: "Message added to chat", responseMessage });
   } catch (error) {
     res.status(500).json({ message: "Error adding message to chat", error });
   }
@@ -95,15 +111,31 @@ const viewAllMessagesInChat = asyncHandler(async (req, res) => {
   const chatId = req.params.chatId;
   try {
     const chat = await Chat.findById(chatId)
+      .populate({
+        path: "messages",
+        populate: {
+          path: "user",
+          select: "firstName lastName profilePhoto",
+        },
+      })
       .populate("members.user", "-password")
-      .populate("groupAdmin", "-password")
-      .populate("messages");
+      .populate("groupAdmin", "-password");
 
     if (!chat) {
       throw new Error("Chat not found");
     }
 
-    res.json(chat.messages);
+    // Extract the populated messages from the chat and send them in the response
+    const messages = chat.messages.map((message) => ({
+      _id: message._id,
+      text: message.text,
+      createdAt: message.createdAt,
+      updatedAt: message.updatedAt,
+      __v: message.__v,
+      user: message.user, // Already populated by Mongoose
+    }));
+
+    res.json(messages);
   } catch (error) {
     res.status(400);
     throw new Error(error.message);

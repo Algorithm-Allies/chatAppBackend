@@ -6,7 +6,6 @@ const Message = require("../models/messageModel.js");
 // @desc Get Channels the user is part of
 // @route GET /api/messages
 // @access Private
-
 const getChannels = asyncHandler(async (req, res) => {
   try {
     console.log("searching");
