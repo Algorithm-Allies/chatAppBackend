@@ -10,6 +10,9 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add a last name"],
     },
+    pronouns: {
+      type: String,
+    },
     email: {
       type: String,
       required: [true, "Please add an email"],
@@ -29,6 +32,18 @@ const userSchema = mongoose.Schema(
       required: [true, "Please add a date of birth"],
     },
     profilePhoto: {
+      type: String,
+      default: "../data/defaultAvatar.jpg",
+    },
+    primaryColor: {
+      type: String,
+      default: "black",
+    },
+    accentColor: {
+      type: String,
+      default: "white",
+    },
+    aboutMe: {
       type: String,
     },
   },
