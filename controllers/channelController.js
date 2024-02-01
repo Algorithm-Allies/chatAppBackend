@@ -13,8 +13,7 @@ const getChannels = asyncHandler(async (req, res) => {
 
     const result = await Channel.find({
       "members.user": req.user._id,
-      isGroupChat: true, // Add a condition for isGroupChat to be true
-    }).populate("members.user", "-password");
+    }).populate("members.user", "-password"); // Populate the user field within the members array
 
     res.send(result);
   } catch (error) {

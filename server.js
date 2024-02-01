@@ -19,7 +19,6 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/channels", require("./routes/channelRoutes"));
 app.use("/api/messages", require("./routes/singleMessageRoutes"));
 app.use("/api/directMessages", require("./routes/directMessagesRoutes"));
-app.use("/api/profile", require("./routes/profileRoutes"));
 app.get("/", (req, res) => {
   res.send("Welcome to the root URL!");
 });
