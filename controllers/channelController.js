@@ -8,7 +8,7 @@ const Message = require("../models/messageModel.js");
 // @access Private
 const getChannels = asyncHandler(async (req, res) => {
   try {
-    console.log("searching");
+    console.log("searching for channels with user ID:");
     console.log(req.user._id.toString());
 
     const result = await Channel.find({
@@ -79,8 +79,6 @@ const getChannelById = asyncHandler(async (req, res) => {
 const renameChannel = asyncHandler(async (req, res) => {
   try {
     const { channelId, channelName } = req.body;
-
-    console.log("Updating channel with ID:", channelId);
 
     const updatedChannel = await Channel.findByIdAndUpdate(
       channelId,

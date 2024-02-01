@@ -24,7 +24,14 @@ app.get("/", (req, res) => {
   res.send("Welcome to the root URL!");
 });
 
-console.log(process.env.PORT);
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
+});
+
+const io = require("socket.io")(server, {
+  pingTimeout: 60000,
+});
+
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
 });

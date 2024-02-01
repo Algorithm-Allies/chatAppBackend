@@ -5,9 +5,6 @@ const asyncHandler = require("express-async-handler");
 const protect = asyncHandler(async (req, res, next) => {
   let token;
 
-  console.log("Headers", req.headers.authorization);
-  console.log("process.env", process.env.JWT_SECRET);
-
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -21,9 +18,10 @@ const protect = asyncHandler(async (req, res, next) => {
       // Check if the decoded token has the correct property for user ID
       if (decoded && decoded.userId) {
         // Use the correct model here (UserActivation instead of uer)
-        req.user = await UserActivation.findById(decoded.userId).select("-password");
-        console.log(req.user)
-  
+        req.user = await UserActivation.findById(decoded.userId).select(
+          "-password"
+        );
+        console.log(req.user);
 
         next();
       } else {
