@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv").config();
 const connectDB = require("./config/db");
+const initializeSocket = require("./sockets/sockets");
 
 const PORT = process.env.PORT || 3000;
 
@@ -28,10 +29,4 @@ const server = app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
 
-const io = require("socket.io")(server, {
-  pingTimeout: 60000,
-});
-
-io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
-});
+initializeSocket(server);
