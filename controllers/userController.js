@@ -167,10 +167,47 @@ const getUserByUsername = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc: Update user profile picture
+// @route: PUT /api/users/:id/update-profile-picture
+// @access: Private
+const updateProfilePhoto = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    res.status(400);
+    throw new Error("Invalid user ID");
+  }
+
+  // Find the user by ID in the database
+  const user = await User.findById(userId);
+
+  // Check if the user exists
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Update profile picture
+  user.profilePhoto = req.body.profilePhoto; // Assuming profilePhoto is the new picture URL or base64 data
+  console.log(user.profilePhoto)
+  // Save the updated user
+  await user.save();
+
+  res.status(200).json({
+    _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    dateOfBirth: user.dateOfBirth,
+    profilePhoto: user.profilePhoto,
+  });
+});
+
 module.exports = {
   registerUser,
   loginUser,
   getUsers,
   getUser,
   getUserByUsername,
+  updateProfilePhoto,
 };
