@@ -8,6 +8,7 @@ const {
   getUsers,
   getUser,
   getUserByUsername,
+  updateProfilePhoto,
 } = require("../controllers/userController");
 
 router.post("/", registerUser);
@@ -17,5 +18,6 @@ router.use(protect);
 router.get("/", getUsers);
 router.get("/:id", getUser);
 router.get("/username/:username", getUserByUsername);
+router.put("/:id/update-profile-picture",updateProfilePhoto)
 
 module.exports = router;

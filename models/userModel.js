@@ -33,7 +33,7 @@ const userSchema = mongoose.Schema(
     },
     profilePhoto: {
       type: String,
-      default: "../data/defaultAvatar.jpg",
+      default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
     primaryColor: {
       type: String,
