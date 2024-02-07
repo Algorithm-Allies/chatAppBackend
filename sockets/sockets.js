@@ -7,6 +7,12 @@ const User = require("../models/userModel.js");
 function initializeSocket(server) {
   const io = socketIO(server, {
     pingTimeout: 60000,
+    cors: {
+      origin: "*", // Change this to your desired origin, or specific origins
+      methods: ["GET", "POST"], // Add methods you want to allow
+      allowedHeaders: ["Authorization"], // Add headers you want to allow
+      credentials: true, // Set to true if you want to allow credentials (cookies, authorization headers, etc.)
+    },
   });
 
   io.on("connection", (socket) => {
