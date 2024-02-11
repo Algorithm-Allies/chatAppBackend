@@ -17,6 +17,27 @@ const createDirectMessage = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Targeted user not found" });
     }
 
+    const loggedInUserId = req.user._id;
+    const loggedInUser = await User.findById(loggedInUserId);
+    const chatName = `${loggedInUser.username} and ${targetUser.username}`;
+
+    // Check if a chat already exists between the two users
+    const existingChat = await Chat.findOne({
+      isGroupChat: false,
+      members: {
+        $all: [
+          { $elemMatch: { user: loggedInUserId } },
+          { $elemMatch: { user: targetUserObjectId } },
+        ],
+        $size: 2,
+      },
+    });
+
+    if (existingChat) {
+      // If a chat already exists, return it
+      return res.status(200).json(existingChat);
+    }
+
     const isChat = await Chat.findOne({
       isGroupChat: false,
       members: {
@@ -30,7 +51,7 @@ const createDirectMessage = asyncHandler(async (req, res) => {
       res.send(isChat);
     } else {
       const chatData = {
-        chatName: targetUser.username, // Modify as needed
+        chatName: chatName,
         isGroupChat: false,
         members: [{ user: req.user._id }, { user: targetUserObjectId }],
       };
@@ -59,7 +80,7 @@ const getAllDirectMessages = asyncHandler(async (req, res) => {
       isGroupChat: false,
       members: { $elemMatch: { user: userId } },
     })
-      .populate("members.user", "-password")
+      .populate({ path: "members.user", select: "-password" })
       .populate("messages"); // Assuming 'messages' is the field for storing messages
 
     res.status(200).json(directChats);
@@ -75,8 +96,7 @@ const getDirectMessageById = asyncHandler(async (req, res) => {
   try {
     const chatId = req.params.chatId;
     const chat = await Chat.findById(chatId)
-      .populate("members.user", "-password")
-      .populate("chatName")
+      .populate({ path: "members.user", select: "-password" })
       .populate("messages");
 
     if (!chat) {
