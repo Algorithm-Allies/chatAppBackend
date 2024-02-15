@@ -38,7 +38,7 @@ function initializeSocket(server) {
         const newMessage = await Message.create({
           user: userId,
           text,
-          chat: chatId,
+          chatId: chatId,
         });
 
         chat.messages.push(newMessage);
@@ -48,6 +48,7 @@ function initializeSocket(server) {
         io.emit("newMessage", {
           _id: newMessage._id,
           text: newMessage.text,
+          chatId: chatId,
           createdAt: newMessage.createdAt,
           updatedAt: newMessage.updatedAt,
           user: {
@@ -59,6 +60,49 @@ function initializeSocket(server) {
         });
       } catch (error) {
         console.error("Error saving message to the database:", error);
+      }
+    });
+
+    socket.on("editMessage", async (data) => {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.userId;
+
+        const { messageId, newText } = data;
+
+        // Update the message in the database
+        const updatedMessage = await Message.findByIdAndUpdate(
+          messageId,
+          { text: newText },
+          { new: true }
+        ).populate("user", "firstName lastName profilePhoto");
+
+        if (!updatedMessage) {
+          console.error("Message not found");
+          return;
+        }
+
+        // Emit the updated message to all connected clients
+        io.emit("messageEdited", updatedMessage);
+      } catch (error) {
+        console.error("Error editing message:", error);
+      }
+    });
+
+    socket.on("deleteMessage", async (messageId) => {
+      try {
+        // Delete the message from the database
+        const deletedMessage = await Message.findByIdAndDelete(messageId);
+
+        if (!deletedMessage) {
+          console.error("Message not found");
+          return;
+        }
+
+        // Emit the deleted message ID to all connected clients
+        io.emit("messageDeleted", messageId);
+      } catch (error) {
+        console.error("Error deleting message:", error);
       }
     });
   });
