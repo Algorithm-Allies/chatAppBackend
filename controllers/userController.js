@@ -126,23 +126,36 @@ const getUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid user ID");
   }
 
-  // Find the user by ID in the database
-  const user = await User.findById(userId);
+  try {
+    // Find the user by ID in the database
+    const user = await User.findById(userId);
 
-  // Check if the user exists
-  if (!user) {
-    res.status(404);
-    throw new Error("User not found");
+    // Check if the user exists
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    // Return the user data, including all schema fields
+    res.status(200).json({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      pronouns: user.pronouns,
+      email: user.email,
+      username: user.username,
+      dateOfBirth: user.dateOfBirth,
+      profilePhoto: user.profilePhoto,
+      primaryColor: user.primaryColor,
+      accentColor: user.accentColor,
+      aboutMe: user.aboutMe,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Internal Server Error");
   }
-
-  res.status(200).json({
-    _id: user._id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    dateOfBirth: user.dateOfBirth,
-    profilePhoto: user.profilePhoto,
-  });
 });
 
 const getUserByUsername = asyncHandler(async (req, res) => {
@@ -189,7 +202,7 @@ const updateProfilePhoto = asyncHandler(async (req, res) => {
 
   // Update profile picture
   user.profilePhoto = req.body.profilePhoto; // Assuming profilePhoto is the new picture URL or base64 data
-  console.log(user.profilePhoto)
+  console.log(user.profilePhoto);
   // Save the updated user
   await user.save();
 
